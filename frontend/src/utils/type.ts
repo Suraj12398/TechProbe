@@ -9,4 +9,3 @@ export interface Response {
 export interface Feedback {
     feedback: string;
 }
-
