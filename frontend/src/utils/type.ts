@@ -1,0 +1,4 @@
+interface Question {
+    question: string;
+}
+
