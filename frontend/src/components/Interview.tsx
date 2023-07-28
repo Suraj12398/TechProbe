@@ -68,15 +68,15 @@ const Interview = () => {
                 arrayOfPromptAndAnswer.push(obj);
             }
 
-            // console.log(arrayOfPromptAndAnswer);
+            console.log(arrayOfPromptAndAnswer);
     
-            const res = await axios.get(``, {
-                            params: {
-                                arrayOfPromptAndAnswer
-                            }
-                        });
+            // const res = await axios.get(``, {
+            //                 params: {
+            //                     arrayOfPromptAndAnswer
+            //                 }
+            //             });
 
-            console.log(res);
+            // console.log(res);
         }
         catch (error) {
             console.error(error);
@@ -95,7 +95,7 @@ const Interview = () => {
                         </div>
                         <p className='pb-5 text-2xl'>{interviewQuestions[currentQuestionIndex]}</p>
                         <textarea
-                            rows={10}
+                            rows={6}
                             cols={100}
                             value={userResponses[currentQuestionIndex] || ""}
                             onChange={handleResponseChange}
