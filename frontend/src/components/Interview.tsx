@@ -22,21 +22,54 @@ const Interview = () => {
     const [userResponses, setUserResponses] = useState<string[]>([]);
     const [feedback, setFeedback] = useState<string>("");
 
-    // useEffect(() => {
-    //     if(currentQuestionIndex === interviewQuestions.length){
-    //         displayFeedback();
-    //     }
-
-    // }, [currentQuestionIndex])
+    useEffect(() => {
+            // displayFeedback();
+            fetchDataWithAuthorizationAndBody();
+    }, [])
 
     const handleNextQuestion = () => {
         if (currentQuestionIndex + 1 < interviewQuestions.length) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
-        else {
-            displayFeedback();
-        }
+        // else {
+        //     displayFeedback();
+        // }
     }
+
+
+
+    const interviewFeedback =  {
+          
+            "question1": "Tell me about yourself.",
+            "answer1": "Veerangana",
+        
+            "question2": "What are your strengths and weaknesses?",
+            "answer2": "strengths",
+         
+            "question3": "Why do you want to work for our company?",
+            "answer3": "Biotech",
+         
+            "question4": "Describe a challenging situation you faced at work and how you dealt with it.",
+            "answer4": "situation",
+            "question5": "Where do you see yourself in 5 years?",
+            "answer5": "Senior role",
+         
+            "question6": "How do you handle pressure or stressful situations?",
+            "answer6": "time management",
+           "question7": "Do you have any questions for us?",
+            "answer7": "no",
+         "query":"I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format "
+        }
+
+    
+      
+      // Convert the object to a string format using JSON.stringify()
+      const interviewFeedbackString = JSON.stringify(interviewFeedback);
+      
+
+      
+
+
 
     const handleResponseChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { value } = event.target;
@@ -49,39 +82,61 @@ const Interview = () => {
         });
     };
 
-
-    const displayFeedback = async () => {
-
+    const fetchDataWithAuthorizationAndBody = async () => {
+        const url = 'http://localhost:8080/bot/chat'; // Replace with your API endpoint
+        const authToken = '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'; // Replace with your actual authorization token
+      
         try {
+          const response = await axios({
+            method: 'GET',
+            url: url,
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              'Content-Type': 'application/json',
+              // Add any other headers if required
+            },
+            params: {
+              prompt: `${interviewFeedbackString}`
+            },
+          });
+      
+          // Handle the response here
+          console.log(response.data);
+        } catch (error) {
+          // Handle errors
+          console.error('Error fetching data:', error);
+        }
+      };
+    
+
+    // const displayFeedback = async () => {
+
+    //     try {
             
-            let arrayOfPromptAndAnswer : Object[] = [];
+    //         // let arrayOfPromptAndAnswer : Object[] = [];
     
-            for(let i=0; i<interviewQuestions.length; i++){
-                let obj : QuestionAnswerInterface = {
-                    prompt: "",
-                    answer: ""
-                };
+    //         // for(let i=0; i<interviewQuestions.length; i++){
+    //         //     let obj : QuestionAnswerInterface = {
+    //         //         prompt: "",
+    //         //         answer: ""
+    //         //     };
 
-                obj.prompt = interviewQuestions[i];
-                obj.answer = userResponses[i];
+    //         //     obj.prompt = interviewQuestions[i];
+    //         //     obj.answer = userResponses[i];
 
-                arrayOfPromptAndAnswer.push(obj);
-            }
+    //         //     arrayOfPromptAndAnswer.push(obj);
+    //         // }
 
-            console.log(arrayOfPromptAndAnswer);
+    //         // console.log(arrayOfPromptAndAnswer);
     
-            // const res = await axios.get(``, {
-            //                 params: {
-            //                     arrayOfPromptAndAnswer
-            //                 }
-            //             });
+    //         const res = 
 
-            // console.log(res);
-        }
-        catch (error) {
-            console.error(error);
-        }
-    }
+    //         console.log(res);
+    //     }
+    //     catch (error) {
+    //         console.error(error);
+    //     }
+    // }
 
     return (
         <div className='bg-[#cbd5e1] h-screen flex items-center'>
