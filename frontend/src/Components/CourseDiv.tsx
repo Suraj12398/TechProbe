@@ -1,6 +1,9 @@
 import React from "react";
+import {useNavigate} from "react-router-dom"
 
 export const CourseDiv = () => {
+
+  const navigate = useNavigate();
   
   const handleGetStartedClick = (field: any, level: any) => {
     // Save field and level in local storage
@@ -8,6 +11,9 @@ export const CourseDiv = () => {
     localStorage.setItem("level", level);
     // Navigate to the CourseDiv component or perform any other action
     // depending on your requirement
+
+    navigate("/start-interview")
+
   };
 
   return (
