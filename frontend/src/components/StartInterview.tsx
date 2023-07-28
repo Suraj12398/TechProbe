@@ -34,7 +34,7 @@ const StartInterview = () => {
       });
       console.log(response.data);
 
-      //   localStorage("interviewQuestions", )
+      localStorage.setItem("interviewQuestions", response.data)
     } catch (error) {
       console.error("Error fetching data:", error);
     }
