@@ -3,21 +3,49 @@ import { Link } from 'react-router-dom'
 import Interview from './Interview'
 import axios from 'axios';
 
-const StartInterview = (field: string) => {
+const field : string | null = localStorage.getItem("field");
+const level : string | null = localStorage.getItem("level");
+const promptVar : string = `send me five questions on ${field} of difficulty ${level} in array format {
+    question1:  output question,
+    question2:  output question,
+    question3:  output question,
+    question4:  output question,
+    question5:  output question
+}`
+
+const StartInterview = () => {
     const [interviewQuestions, setInterviewQuestions] = useState<string[]>([]);
 
-    // useEffect(() => {
-    //     let res = axios.get(``, {
-    //         params: {
-    //             field
-    //         }
-    //     });
+    const fetchQuestions = async () => {
+        const url = 'http://localhost:8080/bot/chat'; // Replace with your API endpoint
+        const authToken = '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'; // Replace with your actual authorization token
+      
+        try {
+          const response = await axios({
+            method: 'GET',
+            url: url,
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              'Content-Type': 'application/json'
+            },
+            params: {
+              prompt: promptVar
+            },
+          });
+          console.log(response.data);
 
-    //     console.log(res);
 
-    //     // localStorage.setItem("interviewques", JSON.stringify())
 
-    // }, [field]);
+        //   localStorage("interviewQuestions", )
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+
+    useEffect(() => {
+        fetchQuestions();
+    }, [field, level]);
 
 
     return (

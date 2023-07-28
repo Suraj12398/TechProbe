@@ -16,6 +16,12 @@ interface QuestionAnswerInterface {
     answer: string;
 }
 
+// obj={key1:value,key2:value2}
+
+// for(i to n){
+//     obj[`key+${i}`]
+// }
+
 const Interview = () => {
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
