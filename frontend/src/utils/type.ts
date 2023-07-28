@@ -3,7 +3,7 @@ export interface Question {
 }
 
 export interface Response {
-    response: string;
+    answer: string;
 }
 
 export interface Feedback {
