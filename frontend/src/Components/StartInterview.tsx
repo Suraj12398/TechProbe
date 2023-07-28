@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const field: string | null = localStorage.getItem("field");
-const level: string | null = localStorage.getItem("level");
-const promptVar: string = `send me five questions on ${field} of difficulty ${level} in array format {
+const field: any = localStorage.getItem("field");
+const level: any = localStorage.getItem("level");
+const promptVar: string = `send me five questions on ${field} of difficulty ${level} in the format {
     question1:  output question,
     question2:  output question,
     question3:  output question,
@@ -33,7 +33,8 @@ const StartInterview = () => {
       });
       console.log(response.data);
 
-      localStorage.setItem("interviewQuestions", response.data)
+      localStorage.setItem("interviewQuestions", JSON.stringify(response.data));
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }

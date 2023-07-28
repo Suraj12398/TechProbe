@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const interviewQuestions: string[] = [
-  "Tell me about yourself.",
-  "What are your strengths and weaknesses?",
-  "Why do you want to work for our company?",
-  "Describe a challenging situation you faced at work and how you dealt with it.",
-  "Where do you see yourself in 5 years?",
-  "How do you handle pressure or stressful situations?",
-  "Do you have any questions for us?",
-];
+// const interviewQuestions: string[] = [
+//   "Tell me about yourself.",
+//   "What are your strengths and weaknesses?",
+//   "Why do you want to work for our company?",
+//   "Describe a challenging situation you faced at work and how you dealt with it.",
+//   "Where do you see yourself in 5 years?",
+//   "How do you handle pressure or stressful situations?",
+//   "Do you have any questions for us?",
+// ];
 
 interface QuestionAnswerInterface {
   prompt: string;
@@ -22,18 +22,33 @@ interface QuestionAnswerInterface {
 //     obj[`key+${i}`]
 // }
 
+const interviewQuestions: string | null = localStorage.getItem("interviewQuestions");
+
+let parsedInterviewQuestions: { [key: string]: string } = {};
+
+if (interviewQuestions !== null) {
+  parsedInterviewQuestions = JSON.parse(interviewQuestions);
+}
+
+const questionsLength = Object.keys(parsedInterviewQuestions).length;
+
+
 const Interview = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [userResponses, setUserResponses] = useState<string[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
+  // const [userResponses, setUserResponses] = useState<string[]>([]);
+  const [userResponses, setUserResponses] = useState<{ [key: string]: string }>({});
   const [feedback, setFeedback] = useState<string>("");
 
   useEffect(() => {
     // displayFeedback();
-    fetchDataWithAuthorizationAndBody();
-  }, []);
+
+    if(currentQuestionIndex === questionsLength){
+      fetchFeedback();
+    }
+  }, [currentQuestionIndex]);
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex + 1 < interviewQuestions.length) {
+    if (currentQuestionIndex+1 <= questionsLength) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
     // else {
@@ -65,46 +80,57 @@ const Interview = () => {
       "I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format ",
   };
 
-  // Convert the object to a string format using JSON.stringify()
-  const interviewFeedbackString = JSON.stringify(interviewFeedback);
-
-  const handleResponseChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleResponseChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
 
     // Update the userResponses state array with the current response
-    setUserResponses((prevResponses) => {
-      const updatedResponses = [...prevResponses];
-      updatedResponses[currentQuestionIndex] = value;
-      return updatedResponses;
-    });
+    // setUserResponses((prevResponses) => {
+    //   const updatedResponses = [...prevResponses];
+    //   updatedResponses[currentQuestionIndex] = value;
+    //   return updatedResponses;
+    // });
+
+
+    setUserResponses((prevResponses) => ({ ...prevResponses, [`answer${currentQuestionIndex}`]: value }));
   };
 
-  const fetchDataWithAuthorizationAndBody = async () => {
+  const fetchFeedback = async () => {
     const url = "http://localhost:8080/bot/chat"; // Replace with your API endpoint
     const authToken = "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"; // Replace with your actual authorization token
 
-    try {
-      const response = await axios({
-        method: "GET",
-        url: url,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-          // Add any other headers if required
-        },
-        params: {
-          prompt: `${interviewFeedbackString}`,
-        },
-      });
 
-      // Handle the response here
-      console.log(response.data);
-    } catch (error) {
-      // Handle errors
-      console.error("Error fetching data:", error);
-    }
+      // Convert the object to a string format using JSON.stringify()
+      // const interviewFeedbackString = JSON.stringify(interviewFeedback);
+
+      let quesAnsPair : { [key: string]: string } = {};
+
+      for(let i=1; i<=questionsLength; i++){
+        quesAnsPair[`question${i}`] = parsedInterviewQuestions[`question${i}`]
+        quesAnsPair[`answer${i}`] = userResponses[`answer${i}`]
+      }
+
+      quesAnsPair[`query`] = "I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format "
+
+      console.log(quesAnsPair);
+
+    // try {
+    //   const response = await axios({
+    //     method: "GET",
+    //     url: url,
+    //     headers: {
+    //       Authorization: `Bearer ${authToken}`,
+    //       "Content-Type": "application/json"
+    //     },
+    //     params: {
+    //       prompt: `${interviewFeedbackString}`,
+    //     },
+    //   });
+
+    //   console.log(response.data);
+    // } catch (error) {
+    //   console.error("Error fetching data:", error);
+    // }
+
   };
 
   // const displayFeedback = async () => {
@@ -138,17 +164,17 @@ const Interview = () => {
 
   return (
     <div className="h-screen flex items-center">
-      {currentQuestionIndex < interviewQuestions.length ? (
+      {currentQuestionIndex <= questionsLength ? (
         <div className="bg-white p-12 m-auto w-8/12 rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,1,5,0.3)]">
           {/* <h2 className='pb-5'>Question {currentQuestionIndex+1}</h2> */}
           <div className="pb-5 flex flex-row justify-between">
             <h2>Question {currentQuestionIndex + 1}</h2>
             <h2>{`${currentQuestionIndex + 1}/${
-              interviewQuestions.length
+              questionsLength
             }`}</h2>
           </div>
           <p className="pb-5 text-2xl">
-            {interviewQuestions[currentQuestionIndex]}
+            {parsedInterviewQuestions[currentQuestionIndex]}
           </p>
           <textarea
             rows={6}
