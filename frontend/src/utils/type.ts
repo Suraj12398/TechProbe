@@ -1,8 +1,8 @@
-interface Question {
+export interface Question {
     question: string;
 }
 
-interface Response {
+export interface Response {
     answer: string;
 }
 
