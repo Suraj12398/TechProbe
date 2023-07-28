@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Interview from "./Interview";
 import axios from "axios";
 
 const field: string | null = localStorage.getItem("field");
@@ -40,9 +39,11 @@ const StartInterview = () => {
     }
   };
 
+
   useEffect(() => {
     fetchQuestions();
   }, [field, level]);
+
 
   return (
     <div className="h-screen flex items-center ">

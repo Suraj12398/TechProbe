@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Interview from "../Components/Interview";
-import StartInterview from "../Components/StartInterview";
-import { CourseDiv } from "../Components/CourseDiv";
-import { Home } from "../Components/Home";
+import Interview from "../components/Interview";
+import StartInterview from "../components/StartInterview";
+import { CourseDiv } from "../components/CourseDiv";
+import { Home } from "../components/Home";
 
 export const AllRoutes = () => {
   return (
