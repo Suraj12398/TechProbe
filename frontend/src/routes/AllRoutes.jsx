@@ -4,6 +4,7 @@ import Interview from "../Components/Interview";
 import StartInterview from "../Components/StartInterview";
 import { CourseDiv } from "../Components/CourseDiv";
 import { Home } from "../Components/Home";
+import Feedback from "../Components/Feedback";
 
 export const AllRoutes = () => {
   return (
@@ -12,6 +13,7 @@ export const AllRoutes = () => {
       <Route path="/coursediv" element={<CourseDiv />} />
       <Route path="/start-interview" element={<StartInterview />} />
       <Route path="/interview" element={<Interview />} />
+      <Route path="/feedback" element={<Feedback />} />
     </Routes>
   );
 };

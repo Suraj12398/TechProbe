@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // const interviewQuestions: string[] = [
 //   "Tell me about yourself.",
@@ -29,31 +30,34 @@ let parsedInterviewQuestions: { [key: string]: string } = {};
 if (interviewQuestions !== null) {
   parsedInterviewQuestions = JSON.parse(interviewQuestions);
 }
+console.log(parsedInterviewQuestions);
 
 const questionsLength = Object.keys(parsedInterviewQuestions).length;
+console.log(questionsLength);
 
 
 const Interview = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   // const [userResponses, setUserResponses] = useState<string[]>([]);
   const [userResponses, setUserResponses] = useState<{ [key: string]: string }>({});
-  const [feedback, setFeedback] = useState<string>("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // displayFeedback();
+  // useEffect(() => {
+  //   // displayFeedback();
 
-    if(currentQuestionIndex === questionsLength){
-      fetchFeedback();
-    }
-  }, [currentQuestionIndex]);
+  //   if(currentQuestionIndex === questionsLength){
+  //     fetchFeedback();
+  //   }
+  // }, [currentQuestionIndex]);
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex+1 <= questionsLength) {
+    if (currentQuestionIndex+1 < questionsLength) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
-    // else {
-    //     displayFeedback();
-    // }
+    else {
+        // displayFeedback();
+        fetchFeedback();
+    }
   };
 
   const interviewFeedback = {
@@ -91,12 +95,12 @@ const Interview = () => {
     // });
 
 
-    setUserResponses((prevResponses) => ({ ...prevResponses, [`answer${currentQuestionIndex}`]: value }));
+    setUserResponses((prevResponses) => ({ ...prevResponses, [`answer${currentQuestionIndex+1}`]: value }));
   };
 
   const fetchFeedback = async () => {
     const url = "http://localhost:8080/bot/chat"; // Replace with your API endpoint
-    const authToken = "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"; // Replace with your actual authorization token
+    const authToken = "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"; // Replace with your actual authorization token
 
 
       // Convert the object to a string format using JSON.stringify()
@@ -104,32 +108,49 @@ const Interview = () => {
 
       let quesAnsPair : { [key: string]: string } = {};
 
-      for(let i=1; i<=questionsLength; i++){
+      for(let i=0; i<questionsLength; i++){
         quesAnsPair[`question${i}`] = parsedInterviewQuestions[`question${i}`]
         quesAnsPair[`answer${i}`] = userResponses[`answer${i}`]
       }
 
-      quesAnsPair[`query`] = "I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format "
+      quesAnsPair[`query`] = `I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format {
+        "feedback": "overall feedback",
+        "rating": "8/10",
+        "areasOfImprovement": "areasOfImprovement"
+      }`
 
       console.log(quesAnsPair);
 
-    // try {
-    //   const response = await axios({
-    //     method: "GET",
-    //     url: url,
-    //     headers: {
-    //       Authorization: `Bearer ${authToken}`,
-    //       "Content-Type": "application/json"
-    //     },
-    //     params: {
-    //       prompt: `${interviewFeedbackString}`,
-    //     },
-    //   });
+      let quesAnsPairString = JSON.stringify(quesAnsPair);
 
-    //   console.log(response.data);
-    // } catch (error) {
-    //   console.error("Error fetching data:", error);
-    // }
+    try {
+      const response = await axios({
+        method: "GET",
+        url: url,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json"
+        },
+        params: {
+          prompt: quesAnsPairString,
+        },
+      });
+
+      console.log(response.data);
+
+      
+
+      if(response.data){
+        localStorage.setItem("feedback", response.data.feedback);
+        localStorage.setItem("rating", response.data.rating);
+        localStorage.setItem("areasOfImprovement", response.data.areasOfImprovement);
+
+        navigate("/feedback");
+      }
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
 
   };
 
@@ -164,7 +185,7 @@ const Interview = () => {
 
   return (
     <div className="h-screen flex items-center">
-      {currentQuestionIndex <= questionsLength ? (
+      {currentQuestionIndex < questionsLength && 
         <div className="bg-white p-12 m-auto w-8/12 rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,1,5,0.3)]">
           {/* <h2 className='pb-5'>Question {currentQuestionIndex+1}</h2> */}
           <div className="pb-5 flex flex-row justify-between">
@@ -174,13 +195,13 @@ const Interview = () => {
             }`}</h2>
           </div>
           <p className="pb-5 text-2xl">
-            {parsedInterviewQuestions[currentQuestionIndex]}
+            {parsedInterviewQuestions[`question${currentQuestionIndex+1}`]}
           </p>
           <textarea
             rows={6}
             cols={100}
-            value={userResponses[currentQuestionIndex] || ""}
-            onChange={handleResponseChange}
+            value={userResponses[`answer${currentQuestionIndex+1}`] || ""}
+            onChange={(e) => handleResponseChange(e)}
             className="bg-[#e2e8f0]"
           />
           <button
@@ -190,12 +211,7 @@ const Interview = () => {
             Next Question
           </button>
         </div>
-      ) : (
-        <div className="bg-white p-12 m-auto w-8/12 rounded-2xl">
-          {/* Feedback */}
-          <h3>Feedback : </h3>
-        </div>
-      )}
+      }
     </div>
   );
 };
