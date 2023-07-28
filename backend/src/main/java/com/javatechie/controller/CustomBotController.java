@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/bot")
@@ -24,7 +25,7 @@ public class CustomBotController {
     private RestTemplate template;
 
     @GetMapping("/chat")
-    public String chat(@RequestParam("prompt") String prompt){
+    public String chat(@RequestBody String prompt){
         ChatGPTRequest request=new ChatGPTRequest(model, prompt);
         ChatGptResponse chatGptResponse = template.postForObject(apiURL, request, ChatGptResponse.class);
         return chatGptResponse.getChoices().get(0).getMessage().getContent();
