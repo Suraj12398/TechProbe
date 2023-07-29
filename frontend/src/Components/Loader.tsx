@@ -38,7 +38,7 @@ const Loader = () => {
                         </svg>
                     </li>
                 </ul>
-            </div><span>Loading</span></div>
+            </div><span>Loading...</span></div>
     )
 
 };

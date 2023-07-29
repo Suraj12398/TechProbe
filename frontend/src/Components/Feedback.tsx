@@ -5,7 +5,7 @@ import { table } from "console";
 
 
 const Feedback = () => {
-
+  let [name, setName] = useState<string | null>(localStorage.getItem("name"));
   let [feedback, setFeedback] = useState<string | null>(localStorage.getItem("feedback"));
   let [rating, setRating] = useState<string | null>(localStorage.getItem("rating"));
   let [areasOfImprovement, setAreasOfImprovement] = useState<string | null>(localStorage.getItem("areasOfImprovement"));
@@ -23,7 +23,7 @@ const Feedback = () => {
     <>
       <table className="w-8/12 mt-20 bg-[white] m-auto">
         <caption className="caption-top border border-gray-300 bg-[white] text-3xl font-bold p-6 rounded-t-xl">
-          Summary Of Your Interview
+          Summary Of {name}'s Interview
         </caption>
         <tbody className="text-left">
           <tr className="border border-gray-300">

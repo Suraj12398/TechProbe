@@ -92,7 +92,7 @@ const Interview = () => {
       quesAnsPair[`answer${i+1}`] = userResponses[`answer${i+1}`]
     }
 
-    quesAnsPair[`query`] = `I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and also areas of improvement that candidate need give me in object format {
+    quesAnsPair[`query`] = `I have provided object of questions and answer given by candidate, please review all the answers and provide me overall feedback of whole interview and not for each question rating out off 10 and rating should strict and also areas of improvement that candidate need give me in object format {
         "feedback": "overall feedback",
         "rating": "rating/10",
         "areasOfImprovement": "areasOfImprovement"
