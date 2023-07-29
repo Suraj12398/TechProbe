@@ -11,11 +11,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* background-color: rgb(194, 232, 219); */
+  /* background-color: rgb(37, 75, 97); */
+  background-color:#dee6ee;
 }
 
 .dark {
   background-color: #1f2937; /* Set dark mode background color */
+}
+
+.light {
+  background-color:#dee6ee; /* Set light mode background color */
 }
 
 .custom-silver-border {
